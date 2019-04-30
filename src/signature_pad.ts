@@ -341,10 +341,22 @@ export default class SignaturePad {
     this._ctx.fillStyle = this.penColor;
   }
 
+  private _getCanvasWidthScale(): number {
+    return this.canvas.clientWidth / this.canvas.width;
+  }
+
+  private _getCanvasHeightScale(): number {
+    return this.canvas.clientHeight / this.canvas.height;
+  }
+
   private _createPoint(x: number, y: number): Point {
     const rect = this.canvas.getBoundingClientRect();
 
-    return new Point(x - rect.left, y - rect.top, new Date().getTime());
+    return new Point(
+      (x - rect.left) / this._getCanvasWidthScale(), 
+      (y - rect.top) / this._getCanvasHeightScale(), 
+      new Date().getTime()
+    );
   }
 
   // Add point to _lastPoints array and generate a new curve if there are enough points (i.e. 3)
@@ -504,8 +516,8 @@ export default class SignaturePad {
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     const minX = 0;
     const minY = 0;
-    const maxX = this.canvas.width / ratio;
-    const maxY = this.canvas.height / ratio;
+    const maxX = this.canvas.width;
+    const maxY = this.canvas.height;
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
     svg.setAttribute('width', this.canvas.width.toString());
